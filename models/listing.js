@@ -9,9 +9,8 @@ const listingSchema = new Schema({
     },
     description:String,
     image:{
-        type:String,
-        default:"https://www.psdstack.com/wp-content/uploads/2019/08/copyright-free-images-750x420.jpg",
-        set:(v) => v === ""? "https://www.psdstack.com/wp-content/uploads/2019/08/copyright-free-images-750x420.jpg" : v,
+       url:String,
+       filename:String,
     },
     price:Number,
     location:String,
