@@ -60,12 +60,26 @@ router.get("/:id/edit",isLoggedIn,wrapAsync(async (req,res)=>{
     
     let {id} =req.params;
     const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs",{listing});
+    if(!listing){
+        req.flash("error","Cannot find that listing");
+         res.redirect("/listings");
+    }
+    let originalImageUrl = listing.image.url;
+    originalImageUrl = originalImageUrl.replace("/upload","/upload/w_250,");
+    //console.log(originalImageUrl);
+    res.render("listings/edit.ejs",{listing , originalImageUrl});
 }));
 
-router.put("/:id",validateListing,wrapAsync(async (req,res)=>{
+router.put("/:id",upload.single("listing[image]"),validateListing,wrapAsync(async (req,res)=>{
     let {id}=req.params;
-    await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    let listing = await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    if(typeof req.file !== "undefined"){
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = {url,filename};
+        await listing.save();
+    }
+        
     req.flash("success"," Listing Updated!");
     res.redirect(`/listings/${id}`);
 }));
@@ -79,7 +93,7 @@ router.get("/:id",wrapAsync(async (req,res) =>{
         req.flash("error","Cannot find that listing");
         return res.redirect("/listings");
     }
-    console.log(listing);
+    //console.log(listing);
     res.render("listings/show.ejs",{listing});
 }));
 
