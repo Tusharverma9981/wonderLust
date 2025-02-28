@@ -55,9 +55,9 @@ const sessionOptions = {
     }
 };
 
-app.get("/",(req,res) => {
-    res.send("hi,i am root");
-});
+// app.get("/",(req,res) => {
+//     res.send("hi,i am root");
+// });
 //console.log(sessionOptions);
 //console.log(session);
 app.use(session(sessionOptions));
