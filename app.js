@@ -11,6 +11,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session"); // ✅ Correct package
+const MongStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -23,7 +24,9 @@ const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+
+const MONGO_URL = process.env.MONGODB_URL 
 
 main()
     .then(() => {
@@ -44,7 +47,20 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+const store = MongStore.create({ 
+    mongoUrl: MONGO_URL,
+    crypto: {
+        secret:"mysupersecretcode",
+    },
+    touchAfter: 24 * 3600,
+});
+
+store.on("error",(e) => {
+    console.log("session store error",e);
+});
+
 const sessionOptions = {
+    store,
     secret:"mysupersecretcode",
     resave:false,
     saveUninitialized:true,
