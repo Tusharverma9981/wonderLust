@@ -1,10 +1,12 @@
 {
+  "engines": {
+    "node": "22.11.0" 
+  },
   "name": "wonderlust",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "node app.js",
-    "start": "node app.js",
+  
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
